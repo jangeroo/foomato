@@ -29,6 +29,10 @@ function createMenuItem(restoID, burgerName, price) {
     restaurants[restoID].menu.push({ burgerName, price })
 }
 
+function getMenu(restoID) {
+    return restaurants[restoID].menu
+}
+
 // Returns a list of burger objects
 function getAllBurgers() {
     let allBurgers = []
@@ -67,8 +71,8 @@ function runTests() {
     createMenuItem(resto1, "Momma Burger", 4.49)
     createMenuItem(resto1, "Teen Burger", 1.99)
     createMenuItem(resto2, "Big Mac", 3.99)
-    assert(restaurants[resto1].menu.length === 2)
-    assert(restaurants[resto2].menu.length === 1)
+    assert(getMenu(resto1).length === 2)
+    assert(getMenu(resto2).length === 1)
 
     let allBurgers = getAllBurgers()
     assert(allBurgers.length === 3)
