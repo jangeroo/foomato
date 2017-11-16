@@ -1,14 +1,89 @@
 const app = require('express')()
-// const backend = require('./mock-backend.js')
-const backend = require('./firebase-backend.js')
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: true }))
+
+const backend = require('./mock-backend.js')
+// const backend = require('./firebase-backend.js')
 
 app.set('port', (process.env.PORT || 5000));
-
 app.listen(app.get('port'), function () {
-    console.log('fOOmenu-zomato listening on port', app.get('port'))
+  console.log('fOOmenu-zomato listening on port', app.get('port'))
 })
 
 app.get('/', (req, res) => {
+  res.send('Welcome to fOOmato, a stripped-down Zomato API clone.')
+})
 
-    res.send('fOOmenu-zomato, up and running:')
+
+// ZOMATO RESTAURANT DATA MODEL
+// let resto = {
+//   "id": "16774318",
+//   "name": "Otto Enoteca & Pizzeria",
+//   "location": {
+//     "latitude": "40.732013",
+//     "longitude": "-73.996155"
+//   },
+//   "cuisines": "Cafe"
+// }
+app.get('/restaurant', (req, res) => {
+  let restaurants = backend.getRestaurants()
+  let response = []
+
+  if (req.query.res_id) {
+    if (!restaurants[req.query.res_id]) {
+      response = {
+        "code": 404,
+        "status": "Not Found",
+        "message": "Not Found"
+      }
+    }
+    else {
+      response.push(restaurants[req.query.res_id])
+    }
+  }
+  else {
+    for (let restoID in restaurants) {
+      response.push({
+        id: restoID,
+        name: restaurants[restoID].name,
+        location: restaurants[restoID].location
+      })
+    }
+  }
+  res.json(response)
+})
+
+app.post('/restaurant', (req, res) => {
+    if (!req.body.name || !req.body.latitude || !req.body.longitude) {
+        res.json({
+            "code": 404,
+            "status": "Failed",
+            "message": "Missing name, latitude or longitude"
+        })
+    }
+    else {
+        let restoID = backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
+        let restaurants = backend.getRestaurants()
+        res.json(restaurants[restoID])
+    }
+})
+
+app.get('/dailymenu', (req, res) => {
+  // {
+  //   "daily_menu": [
+  //     {
+  //       "daily_menu_id": "16507624",
+  //       "name": "Vinohradský pivovar",
+  //       "start_date": "2016-03-08 11:00",
+  //       "end_date": "2016-03-08 15:00",
+  //       "dishes": [
+  //         {
+  //           "dish_id": "104089345",
+  //           "name": "Tatarák ze sumce s toustem",
+  //           "price": "149 Kč"
+  //         }
+  //       ]
+  //     }
+  //   ]
+  // }
 })

@@ -7,17 +7,21 @@ function genUID() {
 }
 
 // Adds a restaurant and returns the restaurant ID
-function createRestaurant(name, lat, lng) {
+function createRestaurant(name, latitude, longitude) {
     restoID = 'resto_' + genUID()
     restaurants[restoID] = {
         name,
-        coordinates: {
-            lat,
-            lng
+        location: {
+            latitude,
+            longitude
         },
         menu: []
     }
     return restoID
+}
+
+function getRestaurants() {
+    return restaurants
 }
 
 // Adds a burger to the restaurant's menu
@@ -47,6 +51,7 @@ function sortBurgersByPrice(burgers) {
 
 module.exports = {
     createRestaurant,
+    getRestaurants,
     createMenuItem,
     getAllBurgers,
     sortBurgersByPrice
