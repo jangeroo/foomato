@@ -19,6 +19,9 @@ function createRestaurant(name, lat, lng) {
     }
     return restoID
 }
+function getRestaurants() {
+    return restaurants
+}
 
 // Adds a burger to the restaurant's menu
 function createMenuItem(restoID, burgerName, price) {
@@ -46,7 +49,9 @@ function sortBurgersByPrice(burgers) {
 
 
 module.exports = {
+    genUID,
     createRestaurant,
+    getRestaurants,
     createMenuItem,
     getAllBurgers,
     sortBurgersByPrice
