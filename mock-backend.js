@@ -82,6 +82,6 @@ function runTests() {
 
 
 
-    console.log("All test passed")
+    console.log("All mock-backend tests passed")
 }
 runTests()

@@ -41,54 +41,86 @@ function createMenuItem(restoID, burgerName, price) {
         price
     }
 
-    return restaurants.child(restoID).child("menu").child(menuItemID).set(menuItem)
+    return restaurants.child(restoID).child('menu').child(menuItemID).set(menuItem)
     .then(() => menuItem)
 
 }
 
-function getMenuItem() {
-    return restaurants[restoID].menuItems.once('value')
-    .then(menuItems => menuItems.val())
+// Returns a menu object
+async function getMenu(restoID) {
+    const menu = await restaurants.child(restoID).child('menu').once('value')
+    return menu.val()
+}
+
+// Returns a list of menu objects
+async function getAllMenus() {
+    let menus = []
+    for (const restoID in await getRestaurants()) {
+        const menu = await getMenu(restoID)
+        if (menu) menus = menus.concat(menu)
+    }
+    return menus;
 }
 
 // Returns a list of burger objects
-function getAllBurgers() {
+async function getAllBurgers() {
+    let burgers = []
+    for (const menu of await getAllMenus()) {
+        for (var dish_id in menu) {
+            burgers.push(menu[dish_id])
+        }
+    }
+    return burgers;
 }
 
 // Returns a list of burgers objects sorted by price
-function sortBurgersByPrice(burgers) {
+async function sortBurgersByPrice() {
+    const allBurgers = await getAllBurgers()
+    return allBurgers.sort(function(burger1, burger2) {
+        return burger1.price - burger2.price
+    })
 }
 
 
 module.exports = {
+    genUID,
     createRestaurant,
+    getRestaurants,
     createMenuItem,
+    getMenu,
+    getAllMenus,
     getAllBurgers,
-    sortBurgersByPrice
+    sortBurgersByPrice,
 }
 
 
 async function runTests() {
     await database.ref("/").set(null)
 
+    // test createRestaurant() and getRestaurants()
     let resto1 = await createRestaurant('A&W', 45.5047528, -73.5725866)
     let resto2 = await createRestaurant("McDonald's", 45.5033042, -73.5694826)
     let resto3 = await createRestaurant("Burger King", 45.504193, -73.5683899)
     let restaurants = await getRestaurants()
     assert(Object.keys(restaurants).length === 3)
 
+    // test createMenuItem(), getMenu(), getAllMenus()
     await createMenuItem(resto1, "Momma Burger", 4.49)
     await createMenuItem(resto1, "Teen Burger", 1.99)
     await createMenuItem(resto2, "Big Mac", 3.99)
     restaurants = await getRestaurants()
-    assert(Object.keys(restaurants[resto1].menu).length === 2)
+    const menu1 = await getMenu(resto1)
+    const menu2 = await getMenu(resto2)
+    assert(Object.keys(menu1).length === 2)
+    assert(Object.keys(menu2).length === 1)
+    const allMenus = await getAllMenus()
+    assert(allMenus.length === 2)
 
-    // let allBurgers = await getAllBurgers()
-    // assert(allBurgers.length === 3)
+    let allBurgers = await getAllBurgers()
+    assert(Object.keys(allBurgers).length === 3)
     // let burgersSortedByPrice = await sortBurgersByPrice(allBurgers)
     // assert(burgersSortedByPrice[0].price === 1.99)
     // assert(burgersSortedByPrice[2].price === 4.49)
-
 
     console.log("All test passed")
 }
