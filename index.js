@@ -15,18 +15,20 @@ app.get('/', (req, res) => {
 })
 
 
-// ZOMATO RESTAURANT DATA MODEL
-// let resto = {
-//   "id": "16774318",
-//   "name": "Otto Enoteca & Pizzeria",
-//   "location": {
-//     "latitude": "40.732013",
-//     "longitude": "-73.996155"
-//   },
-//   "cuisines": "Cafe"
-// }
+/* ZOMATO RESTAURANT DATA MODEL
+let resto = {
+  "id": "16774318",
+  "name": "Otto Enoteca & Pizzeria",
+  "location": {
+    "latitude": "40.732013",
+    "longitude": "-73.996155"
+  },
+  "cuisines": "Cafe"
+}
+*/
 app.get('/restaurant', (req, res) => {
-  let restaurants = backend.getRestaurants()
+
+  let restaurants = backend.getRestaurants();
   let response = []
 
   if (req.query.res_id) {
@@ -34,7 +36,7 @@ app.get('/restaurant', (req, res) => {
       response = {
         "code": 404,
         "status": "Not Found",
-        "message": "Not Found"
+        "message": `No restaurant matching res_id: ${req.query.res_id}`
       }
     }
     else {
@@ -50,40 +52,98 @@ app.get('/restaurant', (req, res) => {
       })
     }
   }
-  res.json(response)
+  res.json(response);
+
 })
 
 app.post('/restaurant', (req, res) => {
-    if (!req.body.name || !req.body.latitude || !req.body.longitude) {
-        res.json({
-            "code": 404,
-            "status": "Failed",
-            "message": "Missing name, latitude or longitude"
-        })
-    }
-    else {
-        let restoID = backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
-        let restaurants = backend.getRestaurants()
-        res.json(restaurants[restoID])
-    }
+  if (!req.body.name || !req.body.latitude || !req.body.longitude) {
+    res.json({
+      "code": 400,
+      "status": "Bad Request",
+      "message": "Missing name, latitude or longitude"
+    })
+  }
+  else {
+    let restoID = backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
+    let restaurants = backend.getRestaurants()
+    res.json(restaurants[restoID])
+  }
 })
 
+/* ZOMATO DAILY MENU DATA MODEL
+{
+  "daily_menu": [
+    {
+      "menu": [
+        {
+          "dish_id": "104089345",
+          "name": "Tatarák ze sumce s toustem",
+          "price": "149 Kč"
+        }
+      ]
+    }
+  ]
+}
+*/
 app.get('/dailymenu', (req, res) => {
-  // {
-  //   "daily_menu": [
-  //     {
-  //       "daily_menu_id": "16507624",
-  //       "name": "Vinohradský pivovar",
-  //       "start_date": "2016-03-08 11:00",
-  //       "end_date": "2016-03-08 15:00",
-  //       "dishes": [
-  //         {
-  //           "dish_id": "104089345",
-  //           "name": "Tatarák ze sumce s toustem",
-  //           "price": "149 Kč"
-  //         }
-  //       ]
-  //     }
-  //   ]
-  // }
+
+  let restaurants = backend.getRestaurants();
+  let response = []
+
+  if (req.query.res_id) {
+    if (!restaurants[req.query.res_id]) {
+      response = {
+        "code": 404,
+        "status": "Not Found",
+        "message": `No restaurant matching res_id: ${req.query.res_id}`
+      }
+    }
+    else {
+      restaurants[req.query.res_id].menu.forEach(item => {
+        response.push({
+          menu: {
+            dish_id: item.dish_id,
+            name: item.burgerName,
+            price: item.price
+          }
+        })
+      })
+    }
+  }
+  else{
+    response = {
+      "code": 400,
+      "status": "Bad Request",
+      "message": "No Restaurant ID provided"
+    }
+  }
+
+  res.json(response);
+
+})
+
+app.post('/dailymenu', (req, res) => {
+  let response = [];
+  if (!req.body.res_id || !req.body.name || !req.body.price) {
+    res.json({
+      "code": 400,
+      "status": "Bay Request",
+      "message": "Missing res_id, name or price"
+    })
+  }
+  else {
+    let dishID = backend.createDish(req.body.res_id, req.body.name, req.body.price)
+    let restaurants = backend.getRestaurants();
+    restaurants[req.body.res_id].menu.forEach(item => {
+      response.push({
+        menu: {
+          dish_id: item.dish_id,
+          name: item.burgerName,
+          price: item.price
+        }
+      })
+    })
+    res.json(response);
+  }
 })
