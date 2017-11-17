@@ -39,13 +39,7 @@ function getMenu(restoID) {
 function getAllBurgers() {
     let allBurgers = []
     for (var res_id in restaurants) {
-<<<<<<< HEAD
         allBurgers = allBurgers.concat(restaurants[res_id].menu);
-=======
-        // console.log(`restaurants[${res_id}].menu `, restaurants[res_id].menu);
-        allBurgers = allBurgers.concat(restaurants[res_id].menu);
-        // console.log("allBurgers ", allBurgers);
->>>>>>> made review changes
     }
     return allBurgers;
 }
@@ -56,7 +50,6 @@ function sortBurgersByPrice(burgers) {
         return a.price - b.price;
     })
 }
-
 
 
 module.exports = {
@@ -77,20 +70,14 @@ function runTests() {
     createDish(resto1, "Momma Burger", 4.49)
     createDish(resto1, "Teen Burger", 1.99)
     createDish(resto2, "Big Mac", 3.99)
-<<<<<<< HEAD
     assert(getMenu(resto1).length === 2)
     assert(getMenu(resto2).length === 1)
-=======
-    assert(restaurants[resto1].menu.length === 2)
-    assert(restaurants[resto2].menu.length === 1)
->>>>>>> made review changes
 
     let allBurgers = getAllBurgers()
     assert(allBurgers.length === 3)
     let burgersSortedByPrice = sortBurgersByPrice(allBurgers)
     assert(burgersSortedByPrice[0].price === 1.99)
     assert(burgersSortedByPrice[2].price === 4.49)
-
 
 
     console.log("All mock-backend tests passed")

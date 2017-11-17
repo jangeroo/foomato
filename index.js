@@ -15,16 +15,17 @@ app.get('/', (req, res) => {
 })
 
 
-// ZOMATO RESTAURANT DATA MODEL
-// let resto = {
-//   "id": "16774318",
-//   "name": "Otto Enoteca & Pizzeria",
-//   "location": {
-//     "latitude": "40.732013",
-//     "longitude": "-73.996155"
-//   },
-//   "cuisines": "Cafe"
-// }
+/* ZOMATO RESTAURANT DATA MODEL
+let resto = {
+  "id": "16774318",
+  "name": "Otto Enoteca & Pizzeria",
+  "location": {
+    "latitude": "40.732013",
+    "longitude": "-73.996155"
+  },
+  "cuisines": "Cafe"
+}
+*/
 app.get('/restaurant', (req, res) => {
 
   let restaurants = backend.getRestaurants();
@@ -35,7 +36,7 @@ app.get('/restaurant', (req, res) => {
       response = {
         "code": 404,
         "status": "Not Found",
-        "message": "Not Found"
+        "message": `No restaurant matching res_id: ${req.query.res_id}`
       }
     }
     else {
@@ -58,8 +59,8 @@ app.get('/restaurant', (req, res) => {
 app.post('/restaurant', (req, res) => {
   if (!req.body.name || !req.body.latitude || !req.body.longitude) {
     res.json({
-      "code": 404,
-      "status": "Failed",
+      "code": 400,
+      "status": "Bad Request",
       "message": "Missing name, latitude or longitude"
     })
   }
@@ -70,20 +71,21 @@ app.post('/restaurant', (req, res) => {
   }
 })
 
-// ZOMATO DAILY MENU DATA MODEL
-// {
-//   "daily_menu": [
-//     {
-//       "menu": [
-//         {
-//           "dish_id": "104089345",
-//           "name": "Tatarák ze sumce s toustem",
-//           "price": "149 Kč"
-//         }
-//       ]
-//     }
-//   ]
-// }
+/* ZOMATO DAILY MENU DATA MODEL
+{
+  "daily_menu": [
+    {
+      "menu": [
+        {
+          "dish_id": "104089345",
+          "name": "Tatarák ze sumce s toustem",
+          "price": "149 Kč"
+        }
+      ]
+    }
+  ]
+}
+*/
 app.get('/dailymenu', (req, res) => {
 
   let restaurants = backend.getRestaurants();
@@ -93,8 +95,8 @@ app.get('/dailymenu', (req, res) => {
     if (!restaurants[req.query.res_id]) {
       response = {
         "code": 404,
-        "status": " Restaurant Not Found",
-        "message": " Restaurant Not Found"
+        "status": "Not Found",
+        "message": `No restaurant matching res_id: ${req.query.res_id}`
       }
     }
     else {
@@ -111,9 +113,9 @@ app.get('/dailymenu', (req, res) => {
   }
   else{
     response = {
-      "code": 404,
-      "status": " No Restaurant ID provided",
-      "message": " No Restaurant ID provided"
+      "code": 400,
+      "status": "Bad Request",
+      "message": "No Restaurant ID provided"
     }
   }
 
@@ -125,20 +127,15 @@ app.post('/dailymenu', (req, res) => {
   let response = [];
   if (!req.body.res_id || !req.body.name || !req.body.price) {
     res.json({
-      "code": 404,
-      "status": "Failed",
-      "message": "Missing name, latitude or longitude"
+      "code": 400,
+      "status": "Bay Request",
+      "message": "Missing res_id, name or price"
     })
   }
   else {
     let dishID = backend.createDish(req.body.res_id, req.body.name, req.body.price)
-<<<<<<< HEAD
-    let restaurants = backend.getRestaurants()
-    restaurants[req.body.res_id].dishes.forEach(item => {
-=======
     let restaurants = backend.getRestaurants();
     restaurants[req.body.res_id].menu.forEach(item => {
->>>>>>> made review changes
       response.push({
         menu: {
           dish_id: item.dish_id,
