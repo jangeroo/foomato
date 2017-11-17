@@ -24,7 +24,7 @@ function getRestaurants() {
     return restaurants
 }
 
-// Adds a burger to the restaurant's dishes
+// Adds a burger to the restaurant's menu
 function createDish(res_id, burgerName, price) {
     var dish_id = 'dish_' + genUID();
     restaurants[res_id].menu.push({ dish_id, burgerName, price })
@@ -39,7 +39,13 @@ function getMenu(restoID) {
 function getAllBurgers() {
     let allBurgers = []
     for (var res_id in restaurants) {
+<<<<<<< HEAD
         allBurgers = allBurgers.concat(restaurants[res_id].menu);
+=======
+        // console.log(`restaurants[${res_id}].menu `, restaurants[res_id].menu);
+        allBurgers = allBurgers.concat(restaurants[res_id].menu);
+        // console.log("allBurgers ", allBurgers);
+>>>>>>> made review changes
     }
     return allBurgers;
 }
@@ -58,8 +64,7 @@ module.exports = {
     getRestaurants,
     createDish,
     getAllBurgers,
-    sortBurgersByPrice,
-    runTests
+    sortBurgersByPrice
 }
 
 
@@ -72,8 +77,13 @@ function runTests() {
     createDish(resto1, "Momma Burger", 4.49)
     createDish(resto1, "Teen Burger", 1.99)
     createDish(resto2, "Big Mac", 3.99)
+<<<<<<< HEAD
     assert(getMenu(resto1).length === 2)
     assert(getMenu(resto2).length === 1)
+=======
+    assert(restaurants[resto1].menu.length === 2)
+    assert(restaurants[resto2].menu.length === 1)
+>>>>>>> made review changes
 
     let allBurgers = getAllBurgers()
     assert(allBurgers.length === 3)

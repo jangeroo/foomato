@@ -74,7 +74,7 @@ app.post('/restaurant', (req, res) => {
 // {
 //   "daily_menu": [
 //     {
-//       "dishes": [
+//       "menu": [
 //         {
 //           "dish_id": "104089345",
 //           "name": "Tatarák ze sumce s toustem",
@@ -93,14 +93,14 @@ app.get('/dailymenu', (req, res) => {
     if (!restaurants[req.query.res_id]) {
       response = {
         "code": 404,
-        "status": "Not Found",
-        "message": "Not Found"
+        "status": " Restaurant Not Found",
+        "message": " Restaurant Not Found"
       }
     }
     else {
-      restaurants[req.query.res_id].dishes.forEach(item => {
+      restaurants[req.query.res_id].menu.forEach(item => {
         response.push({
-          dishes: {
+          menu: {
             dish_id: item.dish_id,
             name: item.burgerName,
             price: item.price
@@ -109,13 +109,20 @@ app.get('/dailymenu', (req, res) => {
       })
     }
   }
+  else{
+    response = {
+      "code": 404,
+      "status": " No Restaurant ID provided",
+      "message": " No Restaurant ID provided"
+    }
+  }
 
   res.json(response);
 
 })
 
 app.post('/dailymenu', (req, res) => {
-  let response=[];
+  let response = [];
   if (!req.body.res_id || !req.body.name || !req.body.price) {
     res.json({
       "code": 404,
@@ -125,10 +132,15 @@ app.post('/dailymenu', (req, res) => {
   }
   else {
     let dishID = backend.createDish(req.body.res_id, req.body.name, req.body.price)
+<<<<<<< HEAD
     let restaurants = backend.getRestaurants()
     restaurants[req.body.res_id].dishes.forEach(item => {
+=======
+    let restaurants = backend.getRestaurants();
+    restaurants[req.body.res_id].menu.forEach(item => {
+>>>>>>> made review changes
       response.push({
-        dishes: {
+        menu: {
           dish_id: item.dish_id,
           name: item.burgerName,
           price: item.price
