@@ -65,22 +65,22 @@ async function getAllMenus() {
 // Returns a list of burger objects
 async function getAllBurgers() {
     let burgers = []
-    for (const menu of await getAllMenus()) {
-        for (var dish_id in menu) {
-            burgers.push(menu[dish_id])
-        }
-    }
-    return burgers;
+
+    const menus = await getAllMenus()
+
+    menus.forEach(menu => {
+        const menuItems = Object.values(menu)
+        burgers = burgers.concat(menuItems)
+    })
+
+    return burgers
 }
 
 // Returns a list of burgers objects sorted by price
-async function sortBurgersByPrice() {
-    const allBurgers = await getAllBurgers()
-    return allBurgers.sort(function(burger1, burger2) {
-        return burger1.price - burger2.price
-    })
+async function sortBurgersByPrice(allBurgers) {
+    const sortedBurgers = allBurgers.sort((b1, b2) => b1.price - b2.price)
+    return sortedBurgers
 }
-
 
 module.exports = {
     genUID,
@@ -109,6 +109,8 @@ async function runTests() {
     await createMenuItem(resto1, "Teen Burger", 1.99)
     await createMenuItem(resto2, "Big Mac", 3.99)
     restaurants = await getRestaurants()
+
+    // test getMunu() and getAllMenus()
     const menu1 = await getMenu(resto1)
     const menu2 = await getMenu(resto2)
     assert(Object.keys(menu1).length === 2)
@@ -116,11 +118,15 @@ async function runTests() {
     const allMenus = await getAllMenus()
     assert(allMenus.length === 2)
 
-    let allBurgers = await getAllBurgers()
+    //test getAllBurgers()
+    const allBurgers = await getAllBurgers()
     assert(Object.keys(allBurgers).length === 3)
-    // let burgersSortedByPrice = await sortBurgersByPrice(allBurgers)
-    // assert(burgersSortedByPrice[0].price === 1.99)
-    // assert(burgersSortedByPrice[2].price === 4.49)
+
+    // test sortBurgersByPrice()
+    const burgersSortedByPrice = await sortBurgersByPrice(allBurgers)
+    assert(burgersSortedByPrice[0].price === 1.99)
+    assert(burgersSortedByPrice[2].price === 4.49)
+
 
     console.log("All test passed")
 }
