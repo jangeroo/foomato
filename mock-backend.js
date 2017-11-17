@@ -8,8 +8,8 @@ function genUID() {
 
 // Adds a restaurant and returns the restaurant ID
 function createRestaurant(name, latitude, longitude) {
-    restoID = 'resto_' + genUID()
-    restaurants[restoID] = {
+  var res_id = 'resto_' + genUID()
+    restaurants[res_id] = {
         name,
         location: {
             latitude,
@@ -17,16 +17,18 @@ function createRestaurant(name, latitude, longitude) {
         },
         menu: []
     }
-    return restoID
+    return res_id;
 }
 
 function getRestaurants() {
     return restaurants
 }
 
-// Adds a burger to the restaurant's menu
-function createMenuItem(restoID, burgerName, price) {
-    restaurants[restoID].menu.push({ burgerName, price })
+// Adds a burger to the restaurant's dishes
+function createDish(res_id, burgerName, price) {
+    var dish_id = 'dish_' + genUID();
+    restaurants[res_id].menu.push({ dish_id, burgerName, price })
+    return dish_id;
 }
 
 function getMenu(restoID) {
@@ -36,10 +38,8 @@ function getMenu(restoID) {
 // Returns a list of burger objects
 function getAllBurgers() {
     let allBurgers = []
-    for (var restoID in restaurants) {
-        // console.log(`restaurants[${restoID}].menu `, restaurants[restoID].menu);
-        allBurgers = allBurgers.concat(restaurants[restoID].menu);
-        // console.log("allBurgers ", allBurgers);
+    for (var res_id in restaurants) {
+        allBurgers = allBurgers.concat(restaurants[res_id].menu);
     }
     return allBurgers;
 }
@@ -56,9 +56,10 @@ function sortBurgersByPrice(burgers) {
 module.exports = {
     createRestaurant,
     getRestaurants,
-    createMenuItem,
+    createDish,
     getAllBurgers,
-    sortBurgersByPrice
+    sortBurgersByPrice,
+    runTests
 }
 
 
@@ -68,9 +69,9 @@ function runTests() {
     let resto3 = createRestaurant("Burger King", 45.504193, -73.5683899)
     assert(Object.keys(restaurants).length === 3)
 
-    createMenuItem(resto1, "Momma Burger", 4.49)
-    createMenuItem(resto1, "Teen Burger", 1.99)
-    createMenuItem(resto2, "Big Mac", 3.99)
+    createDish(resto1, "Momma Burger", 4.49)
+    createDish(resto1, "Teen Burger", 1.99)
+    createDish(resto2, "Big Mac", 3.99)
     assert(getMenu(resto1).length === 2)
     assert(getMenu(resto2).length === 1)
 

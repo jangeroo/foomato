@@ -26,7 +26,8 @@ app.get('/', (req, res) => {
 //   "cuisines": "Cafe"
 // }
 app.get('/restaurant', (req, res) => {
-  let restaurants = backend.getRestaurants()
+
+  let restaurants = backend.getRestaurants();
   let response = []
 
   if (req.query.res_id) {
@@ -50,22 +51,23 @@ app.get('/restaurant', (req, res) => {
       })
     }
   }
-  res.json(response)
+  res.json(response);
+
 })
 
 app.post('/restaurant', (req, res) => {
-    if (!req.body.name || !req.body.latitude || !req.body.longitude) {
-        res.json({
-            "code": 404,
-            "status": "Failed",
-            "message": "Missing name, latitude or longitude"
-        })
-    }
-    else {
-        let restoID = backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
-        let restaurants = backend.getRestaurants()
-        res.json(restaurants[restoID])
-    }
+  if (!req.body.name || !req.body.latitude || !req.body.longitude) {
+    res.json({
+      "code": 404,
+      "status": "Failed",
+      "message": "Missing name, latitude or longitude"
+    })
+  }
+  else {
+    let restoID = backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
+    let restaurants = backend.getRestaurants()
+    res.json(restaurants[restoID])
+  }
 })
 
 // ZOMATO DAILY MENU DATA MODEL
@@ -84,8 +86,55 @@ app.post('/restaurant', (req, res) => {
 // }
 app.get('/dailymenu', (req, res) => {
 
+  let restaurants = backend.getRestaurants();
+  let response = []
+
+  if (req.query.res_id) {
+    if (!restaurants[req.query.res_id]) {
+      response = {
+        "code": 404,
+        "status": "Not Found",
+        "message": "Not Found"
+      }
+    }
+    else {
+      restaurants[req.query.res_id].dishes.forEach(item => {
+        response.push({
+          dishes: {
+            dish_id: item.dish_id,
+            name: item.burgerName,
+            price: item.price
+          }
+        })
+      })
+    }
+  }
+
+  res.json(response);
+
 })
 
 app.post('/dailymenu', (req, res) => {
-
+  let response=[];
+  if (!req.body.res_id || !req.body.name || !req.body.price) {
+    res.json({
+      "code": 404,
+      "status": "Failed",
+      "message": "Missing name, latitude or longitude"
+    })
+  }
+  else {
+    let dishID = backend.createDish(req.body.res_id, req.body.name, req.body.price)
+    let restaurants = backend.getRestaurants()
+    restaurants[req.body.res_id].dishes.forEach(item => {
+      response.push({
+        dishes: {
+          dish_id: item.dish_id,
+          name: item.burgerName,
+          price: item.price
+        }
+      })
+    })
+    res.json(response);
+  }
 })
