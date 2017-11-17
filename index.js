@@ -78,7 +78,7 @@ app.post('/restaurant', (req, res) => {
 {
   "daily_menu": [
     {
-      "menu": [
+      "dishes": [
         {
           "dish_id": "104089345",
           "name": "Tatarák ze sumce s toustem",
@@ -103,18 +103,23 @@ app.get('/dailymenu', (req, res) => {
       }
     }
     else {
+      response = {
+        "daily_menu": [
+          { "dishes": [] }
+        ]
+      }
       restaurants[req.query.res_id].menu.forEach(item => {
-        response.push({
-          menu: {
+        response.daily_menu[0].dishes.push(
+          {
             dish_id: item.dish_id,
             name: item.burgerName,
             price: item.price
           }
-        })
+        )
       })
     }
   }
-  else{
+  else {
     response = {
       "code": 400,
       "status": "Bad Request",
