@@ -62,22 +62,7 @@ async function getAllMenus() {
     return menus;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 // Returns a list of burger objects
-=======
->>>>>>> Firebase-backend Finish
-async function getAllBurgers() {
-    let burgers = []
-
-    const menus = await getAllMenus()
-
-    menus.forEach(menu => {
-        const menuItems = Object.values(menu)
-        burgers = burgers.concat(menuItems)
-    })
-<<<<<<< HEAD
-=======
 async function getAllBurgers() {
     let burgers = []
 
@@ -89,11 +74,6 @@ async function getAllBurgers() {
     })
 
     return burgers
->>>>>>> Firebase-backend Finish
-=======
-
-    return burgers
->>>>>>> Firebase-backend Finish
 }
 
 // Returns a list of burgers objects sorted by price
@@ -128,59 +108,26 @@ async function runTests() {
     await createMenuItem(resto1, "Momma Burger", 4.49)
     await createMenuItem(resto1, "Teen Burger", 1.99)
     await createMenuItem(resto2, "Big Mac", 3.99)
-<<<<<<< HEAD
     restaurants = await getRestaurants()
 
+    // test getMunu() and getAllMenus()
     const menu1 = await getMenu(resto1)
     const menu2 = await getMenu(resto2)
     assert(Object.keys(menu1).length === 2)
     assert(Object.keys(menu2).length === 1)
-=======
-    
-    const menu = await getMenu(resto1)
-    
-    assert(Object.keys(menu).length === 2)
-
-    assert(Object.keys(await getMenu(resto2)).length === 1)
-    
->>>>>>> Firebase-backend Finish
     const allMenus = await getAllMenus()
     assert(allMenus.length === 2)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    let allBurgers = await getAllBurgers()
-    assert(Object.keys(allBurgers).length === 3)
-    // let burgersSortedByPrice = await sortBurgersByPrice(allBurgers)
-    // assert(burgersSortedByPrice[0].price === 1.99)
-    // assert(burgersSortedByPrice[2].price === 4.49)
-=======
+    //test getAllBurgers()
     const allBurgers = await getAllBurgers()
+    assert(Object.keys(allBurgers).length === 3)
 
+    // test sortBurgersByPrice()
     const burgersSortedByPrice = await sortBurgersByPrice(allBurgers)
-
-    console.log(burgersSortedByPrice)
     assert(burgersSortedByPrice[0].price === 1.99)
     assert(burgersSortedByPrice[2].price === 4.49)
->>>>>>> Firebase-backend Finish
 
-=======
-    console.log("ok")
 
-    console.log(allMenus)
-
-    const allBurgers = await getAllBurgers()
-
-    console.log(allBurgers)
-    
-    const burgersSortedByPrice = await sortBurgersByPrice(allBurgers)
-
-    console.log(burgersSortedByPrice)    // assert(burgersSortedByPrice[0].price === 1.99)
-    // assert(burgersSortedByPrice[2].price === 4.49)
-
-    // console.log("ok")
-
->>>>>>> Firebase-backend Finish
     console.log("All test passed")
 }
 runTests()
