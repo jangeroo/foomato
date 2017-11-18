@@ -143,14 +143,9 @@ app.post('/dailymenu', (req, res) => {
   else {
     let dishID = backend.createDish(req.body.res_id, req.body.name, req.body.price)
     let restaurants = backend.getRestaurants();
-    restaurants[req.body.res_id].menu.forEach(item => {
-      response.push({
-        menu: {
-          dish_id: item.dish_id,
-          name: item.burgerName,
-          price: item.price
-        }
-      })
+
+    restaurants[req.body.res_id].menu.forEach(dish => {
+      if (dish.dish_id == dishID) response = dish
     })
     res.json(response);
   }
