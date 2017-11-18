@@ -5,8 +5,8 @@ const bodyParser = require('body-parser')
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const backend = require('./mock-backend.js')
-// const backend = require('./firebase-backend.js')
+// const backend = require('./mock-backend.js')
+const backend = require('./firebase-backend.js')
 
 app.set('port', (process.env.PORT || 5000));
 app.listen(app.get('port'), function () {
@@ -34,9 +34,9 @@ let resto = {
   "cuisines": "Cafe"
 }
 */
-app.get('/restaurant', (req, res) => {
+app.get('/restaurant', async (req, res) => {
 
-  let restaurants = backend.getRestaurants();
+  let restaurants = await backend.getRestaurants();
   let response = []
 
   if (req.query.res_id) {
@@ -69,7 +69,7 @@ app.get('/restaurant', (req, res) => {
 
 })
 
-app.post('/restaurant', (req, res) => {
+app.post('/restaurant', async (req, res) => {
   if (!req.body.name || !req.body.latitude || !req.body.longitude) {
     res.json({
       "code": 400,
@@ -78,8 +78,8 @@ app.post('/restaurant', (req, res) => {
     })
   }
   else {
-    let restoID = backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
-    let restaurants = backend.getRestaurants()
+    let restoID = await backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
+    let restaurants = await backend.getRestaurants()
     res.json(restaurants[restoID])
   }
 })
