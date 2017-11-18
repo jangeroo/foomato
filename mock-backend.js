@@ -53,6 +53,7 @@ function sortBurgersByPrice(burgers) {
 
 
 module.exports = {
+    module_name: 'MOCK backend',
     createRestaurant,
     getRestaurants,
     createDish,

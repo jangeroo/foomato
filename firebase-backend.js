@@ -83,6 +83,7 @@ async function sortBurgersByPrice(allBurgers) {
 }
 
 module.exports = {
+    module_name: 'FIREBASE backend',
     genUID,
     createRestaurant,
     getRestaurants,

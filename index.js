@@ -14,7 +14,12 @@ app.listen(app.get('port'), function () {
 })
 
 app.get('/', (req, res) => {
-  res.send('Welcome to fOOmato, a stripped-down Zomato API clone.')
+  let response = {
+    API_name: 'Foomato',
+    description: 'A Zomato clone',
+    backend: backend.module_name
+  }
+  res.send(response)
 })
 
 
