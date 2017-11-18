@@ -143,21 +143,31 @@ app.get('/dailymenu', async (req, res) => {
 })
 
 app.post('/dailymenu', async (req, res) => {
+  // console.log(req.body)
   let response = [];
   if (!req.body.res_id || !req.body.name || !req.body.price) {
     res.json({
       "code": 400,
-      "status": "Bay Request",
+      "status": "Bad Request",
       "message": "Missing res_id, name or price"
     })
   }
   else {
-    let dishID = await backend.createDish(req.body.res_id, req.body.name, req.body.price)
-    let restaurants = await backend.getRestaurants();
-
-    restaurants[req.body.res_id].menu.forEach(dish => {
-      if (dish.dish_id == dishID) response = dish
-    })
-    res.json(response);
+    var restaurants = await backend.getRestaurants();
+    if (!restaurants.hasOwnProperty(req.body.res_id)) {
+      res.json({
+        "code": 404,
+        "status": "Not Found",
+        "message": `No restaurant matching res_id: ${req.body.res_id}`
+      })
+    }
+    else {
+      let dishID = await backend.createDish(req.body.res_id, req.body.name, req.body.price)
+      restaurants = await backend.getRestaurants();
+      for (dish in restaurants[req.body.res_id].menu) {
+          if (dish.dish_id == dishID) response = dish
+      }
+      res.json(response);
+    }
   }
 })
