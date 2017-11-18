@@ -48,7 +48,12 @@ app.get('/restaurant', (req, res) => {
       }
     }
     else {
-      response.push(restaurants[req.query.res_id])
+      resto = restaurants[req.query.res_id]
+      response.push({
+        id: req.query.res_id,
+        name: resto.name,
+        location: resto.location
+      })
     }
   }
   else {
