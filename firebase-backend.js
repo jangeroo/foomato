@@ -133,4 +133,4 @@ async function runTests() {
 
     console.log("All test passed")
 }
-// runTests()
+runTests()
