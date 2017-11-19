@@ -19,7 +19,7 @@ describe('POST /restaurant', function () {
     expect(response.body.location.longitude).to.equal('73')
     var getURL = FOOMATO_URL + `${response.header.location}`
     var resto = (await request.get(getURL)).body
-    expect(resto[0].name).to.equal('Michael Burger')
+    expect(resto.name).to.equal('Michael Burger')
   })
 
   it('adds a new restaurant to the list of restaurants', async () => {
@@ -92,6 +92,7 @@ let resto = {
     expect(restaurants[0].location).to.have.property('latitude')
     expect(restaurants[0].location).to.have.property('longitude')
   })
+
   it('returns a restaurant object if a valid res_id is provided', async () => {
     var body = {
       name: 'BashuTime',
@@ -100,10 +101,12 @@ let resto = {
     }
     let postResponse = await request.post(restaurantEndpoint).type('form').send(body)
     let response = await request.get(FOOMATO_URL + postResponse.header.location)
-    expect(response.body[0].name).to.equal(body.name)
-    expect(parseFloat(response.body[0].location.latitude)).to.deep.equal(body.latitude)
-    expect(parseFloat(response.body[0].location.longitude)).to.deep.equal(body.longitude)
+    // NOTE: this currently returns a list with a single object. It should return the object itself
+    expect(response.body.name).to.equal(body.name)
+    expect(parseFloat(response.body.location.latitude)).to.deep.equal(body.latitude)
+    expect(parseFloat(response.body.location.longitude)).to.deep.equal(body.longitude)
   })
+
   it('returns an error if res_id is invalid', async () => {
     let res_id = 'booya'
     let response = await request.get(restaurantEndpoint).query(`res_id=${res_id}`)

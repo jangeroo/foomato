@@ -49,19 +49,19 @@ app.get('/restaurant', async (req, res) => {
     }
     else {
       resto = restaurants[req.query.res_id]
-      response.push({
+      response = {
         id: req.query.res_id,
         name: resto.name,
         location: resto.location
-      })
+      }
     }
   }
   else {
-    for (let restoID in restaurants) {
+    for (let res_id in restaurants) {
       response.push({
-        id: restoID,
-        name: restaurants[restoID].name,
-        location: restaurants[restoID].location
+        id: res_id,
+        name: restaurants[res_id].name,
+        location: restaurants[res_id].location
       })
     }
   }
@@ -78,10 +78,10 @@ app.post('/restaurant', async (req, res) => {
     })
   }
   else {
-    let restoID = await backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
+    let res_id = await backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
     let restaurants = await backend.getRestaurants()
-    res.setHeader('location', `/restaurant?res_id=${restoID}`)
-    res.json(restaurants[restoID])
+    res.setHeader('location', `/restaurant?res_id=${res_id}`)
+    res.json(restaurants[res_id])
   }
 })
 
