@@ -8,11 +8,17 @@
     "cors": "^2.8.4",
     "express": "^4.16.2",
     "firebase-admin": "^5.5.0",
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.12.1",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "superagent": "^3.8.1"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
