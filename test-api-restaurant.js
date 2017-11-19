@@ -81,8 +81,34 @@ let resto = {
 */
 
   it('returns a list of all restaurants if no res_id provided', async () => {
-
-    var restaurants = await request.get(restaurantEndpoint)
-    expect(restaurants.length)
+    var body = { name: 'BashuTime', latitude: 23, longitude: 34 }
+    await request.post(restaurantEndpoint).type('form').send(body)
+    // call a second time to ensure at least 2 restaurants
+    await request.post(restaurantEndpoint).type('form').send(body)
+    var restaurants = (await request.get(restaurantEndpoint)).body
+    expect(restaurants.length).to.be.greaterThan(1)
+    expect(restaurants[0]).to.have.property('id')
+    expect(restaurants[0]).to.have.property('name')
+    expect(restaurants[0].location).to.have.property('latitude')
+    expect(restaurants[0].location).to.have.property('longitude')
+  })
+  it('returns a restaurant object if a valid res_id is provided', async () => {
+    var body = {
+      name: 'BashuTime',
+      latitude: Math.random() * 100,
+      longitude: Math.random() * 100
+    }
+    let postResponse = await request.post(restaurantEndpoint).type('form').send(body)
+    let response = await request.get(FOOMATO_URL + postResponse.header.location)
+    expect(response.body[0].name).to.equal(body.name)
+    expect(parseFloat(response.body[0].location.latitude)).to.deep.equal(body.latitude)
+    expect(parseFloat(response.body[0].location.longitude)).to.deep.equal(body.longitude)
+  })
+  it('returns an error if res_id is invalid', async () => {
+    let res_id = 'booya'
+    let response = await request.get(restaurantEndpoint).query(`res_id=${res_id}`)
+    expect(response.body.code).to.equal(404)
+    expect(response.body.status).to.equal('Not Found')
+    expect(response.body.message).to.equal(`No restaurant matching res_id: ${res_id}`)
   })
 })
