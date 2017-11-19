@@ -80,6 +80,7 @@ app.post('/restaurant', async (req, res) => {
   else {
     let restoID = await backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
     let restaurants = await backend.getRestaurants()
+    res.setHeader('location', `/restaurant?res_id=${restoID}`)
     res.json(restaurants[restoID])
   }
 })
