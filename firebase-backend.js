@@ -36,7 +36,7 @@ function getRestaurants() {
 }
 
 // Adds a burger to the restaurant's menu
-function createMenuItem(restoID, burgerName, price) {
+function createDish(restoID, burgerName, price) {
     let menuItemID = `menuItem_${genUID()}`
     let menuItem = {
         burgerName,
@@ -44,7 +44,7 @@ function createMenuItem(restoID, burgerName, price) {
     }
 
     return restaurants.child(restoID).child('menu').child(menuItemID).set(menuItem)
-    .then(() => menuItem)
+    .then(() => menuItemID)
 
 }
 
@@ -89,7 +89,7 @@ module.exports = {
     genUID,
     createRestaurant,
     getRestaurants,
-    createMenuItem,
+    createDish,
     getMenu,
     getAllMenus,
     getAllBurgers,
@@ -107,10 +107,10 @@ async function runTests() {
     let restaurants = await getRestaurants()
     assert(Object.keys(restaurants).length === 3)
 
-    // test createMenuItem(), getMenu(), getAllMenus()
-    await createMenuItem(resto1, "Momma Burger", 4.49)
-    await createMenuItem(resto1, "Teen Burger", 1.99)
-    await createMenuItem(resto2, "Big Mac", 3.99)
+    // test createDish(), getMenu(), getAllMenus()
+    await createDish(resto1, "Momma Burger", 4.49)
+    await createDish(resto1, "Teen Burger", 1.99)
+    await createDish(resto2, "Big Mac", 3.99)
     restaurants = await getRestaurants()
 
     // test getMunu() and getAllMenus()
