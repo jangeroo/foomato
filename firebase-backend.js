@@ -15,13 +15,15 @@ function genUID() {
 }
 
 // Adds a restaurant and returns the restaurant ID
-function createRestaurant(name, lat, lng) {
+function createRestaurant(name, latitude, longitude) {
    let restoID = `resto_${genUID()}`
    let restaurant = {
         restoID,
         name,
-        lat,
-        lng
+       location: {
+           latitude,
+           longitude
+       },
    }
 
    return restaurants.child(restoID).set(restaurant)

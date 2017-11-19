@@ -5,8 +5,8 @@ const bodyParser = require('body-parser')
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const backend = require('./mock-backend.js')
-// const backend = require('./firebase-backend.js')
+// const backend = require('./mock-backend.js')
+const backend = require('./firebase-backend.js')
 
 app.set('port', (process.env.PORT || 5000));
 app.listen(app.get('port'), function () {
@@ -34,9 +34,9 @@ let resto = {
   "cuisines": "Cafe"
 }
 */
-app.get('/restaurant', (req, res) => {
+app.get('/restaurant', async (req, res) => {
 
-  let restaurants = backend.getRestaurants();
+  let restaurants = await backend.getRestaurants();
   let response = []
 
   if (req.query.res_id) {
@@ -69,7 +69,7 @@ app.get('/restaurant', (req, res) => {
 
 })
 
-app.post('/restaurant', (req, res) => {
+app.post('/restaurant', async (req, res) => {
   if (!req.body.name || !req.body.latitude || !req.body.longitude) {
     res.json({
       "code": 400,
@@ -78,8 +78,8 @@ app.post('/restaurant', (req, res) => {
     })
   }
   else {
-    let restoID = backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
-    let restaurants = backend.getRestaurants()
+    let restoID = await backend.createRestaurant(req.body.name, req.body.latitude, req.body.longitude)
+    let restaurants = await backend.getRestaurants()
     res.json(restaurants[restoID])
   }
 })
@@ -99,9 +99,9 @@ app.post('/restaurant', (req, res) => {
   ]
 }
 */
-app.get('/dailymenu', (req, res) => {
+app.get('/dailymenu', async (req, res) => {
 
-  let restaurants = backend.getRestaurants();
+  let restaurants = await backend.getRestaurants();
   let response = []
 
   if (req.query.res_id) {
@@ -118,15 +118,14 @@ app.get('/dailymenu', (req, res) => {
           { "dishes": [] }
         ]
       }
-      restaurants[req.query.res_id].menu.forEach(item => {
-        response.daily_menu[0].dishes.push(
-          {
-            dish_id: item.dish_id,
-            name: item.burgerName,
-            price: item.price
-          }
-        )
-      })
+      let menu = restaurants[req.query.res_id].menu
+      for (let dish_id in menu) {
+        response.daily_menu[0].dishes.push({
+          dish_id,
+          name: menu[dish_id].burgerName,
+          price: menu[dish_id].price
+        })
+      }
     }
   }
   else {
@@ -141,7 +140,7 @@ app.get('/dailymenu', (req, res) => {
 
 })
 
-app.post('/dailymenu', (req, res) => {
+app.post('/dailymenu', async (req, res) => {
   let response = [];
   if (!req.body.res_id || !req.body.name || !req.body.price) {
     res.json({
@@ -151,8 +150,8 @@ app.post('/dailymenu', (req, res) => {
     })
   }
   else {
-    let dishID = backend.createDish(req.body.res_id, req.body.name, req.body.price)
-    let restaurants = backend.getRestaurants();
+    let dishID = await backend.createDish(req.body.res_id, req.body.name, req.body.price)
+    let restaurants = await backend.getRestaurants();
 
     restaurants[req.body.res_id].menu.forEach(dish => {
       if (dish.dish_id == dishID) response = dish
